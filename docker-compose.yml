@@ -1,0 +1,32 @@
+services:
+  ollama:
+    container_name: deep-seek
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - .data:/root/.ollama
+      - .script:/root
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
+    environment:
+      - OLLAMA_LLM_LIBRARY=cuda
+      - OLLAMA_CUDA_VISIBLE_DEVICES=0
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+  webui:
+    container_name: ollama-webui
+    image: ghcr.io/open-webui/open-webui:main
+    ports:
+      - "3000:3000"  # Access UI at http://localhost:3000
+    environment:
+      - OLLAMA_API_BASE_URL=http://ollama:11434
+    depends_on:
+      - ollama
+#    entrypoint: ["/bin/sh", "/root/entrypoint.sh"]
