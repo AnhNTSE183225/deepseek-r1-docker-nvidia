@@ -3,8 +3,6 @@
 # ollama pull [model]
 # ollama list
 # ollama run deepseek-r1:1.5b "Think carefully and tell me what's the meaning of life"
-version: '3'
-
 services:
   ollama:
     container_name: ollama
