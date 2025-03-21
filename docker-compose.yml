@@ -8,7 +8,7 @@ services:
     container_name: ollama
     image: ollama/ollama
     ports:
-      - "11434:11434/tcp"
+      - "11434:11434"
     volumes:
       - ./ollama:/root/.ollama
     deploy:
@@ -19,27 +19,10 @@ services:
               count: all
               capabilities: [ gpu ]
     environment:
-      - OLLAMA_HOST=0.0.0.0:11434
       - OLLAMA_LLM_LIBRARY=cuda
       - OLLAMA_CUDA_VISIBLE_DEVICES=0
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-    networks:
-      - ollama-network
-    command: serve
-
-  webui:
-    container_name: ollama-webui
-    image: ghcr.io/open-webui/open-webui:main
-    ports:
-      - 3099:8080/tcp
-    volumes:
-      - ./ollama/webui:/app/backend/data
-#    environment:
-#      - OLLAMA_API_BASE_URL=http://ollama:11434
-#      - DEFAULT_MODELS=deepseek-r1:1.5b
-    depends_on:
-      - ollama
     networks:
       - ollama-network
 
