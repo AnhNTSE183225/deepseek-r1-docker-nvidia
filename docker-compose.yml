@@ -3,15 +3,17 @@
 # ollama pull [model]
 # ollama list
 # ollama run deepseek-r1:1.5b "Think carefully and tell me what's the meaning of life"
+version: '3'
+
 services:
   ollama:
-    container_name: deep-seek
+    container_name: ollama
     image: ollama/ollama
     ports:
       - "11434:11434"
     volumes:
-      - .data:/root/.ollama
-      - .script:/root
+      - ./.data:/root/.ollama
+      - ./.script:/root
     deploy:
       resources:
         reservations:
@@ -24,8 +26,9 @@ services:
       - OLLAMA_CUDA_VISIBLE_DEVICES=0
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    networks:
+      - ollama-network
+
   webui:
     container_name: ollama-webui
     image: ghcr.io/open-webui/open-webui:main
@@ -36,3 +39,9 @@ services:
       - DEFAULT_MODELS=deepseek-r1:1.5b
     depends_on:
       - ollama
+    networks:
+      - ollama-network
+
+networks:
+  ollama-network:
+    driver: bridge
