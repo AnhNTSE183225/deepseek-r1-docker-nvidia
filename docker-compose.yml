@@ -24,6 +24,8 @@ services:
       - OLLAMA_CUDA_VISIBLE_DEVICES=0
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   webui:
     container_name: ollama-webui
     image: ghcr.io/open-webui/open-webui:main
@@ -31,5 +33,6 @@ services:
       - "3000:8080"  # Access UI at http://localhost:3000
     environment:
       - OLLAMA_API_BASE_URL=http://ollama:11434
+      - DEFAULT_MODELS=deepseek-r1:1.5b
     depends_on:
       - ollama
