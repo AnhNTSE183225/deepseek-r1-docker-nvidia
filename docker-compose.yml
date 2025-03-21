@@ -8,10 +8,9 @@ services:
     container_name: ollama
     image: ollama/ollama
     ports:
-      - "11434:11434"
+      - "11434:11434/tcp"
     volumes:
-      - ./.data:/root/.ollama
-      - ./.script:/root
+      - ./ollama:/root/.ollama
     deploy:
       resources:
         reservations:
@@ -27,15 +26,18 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     networks:
       - ollama-network
+    command: serve
 
   webui:
     container_name: ollama-webui
     image: ghcr.io/open-webui/open-webui:main
     ports:
-      - "3000:8080"  # Access UI at http://localhost:3000
-    environment:
-      - OLLAMA_API_BASE_URL=http://ollama:11434
-      - DEFAULT_MODELS=deepseek-r1:1.5b
+      - 3099:8080/tcp
+    volumes:
+      - ./ollama/webui:/app/backend/data
+#    environment:
+#      - OLLAMA_API_BASE_URL=http://ollama:11434
+#      - DEFAULT_MODELS=deepseek-r1:1.5b
     depends_on:
       - ollama
     networks:
