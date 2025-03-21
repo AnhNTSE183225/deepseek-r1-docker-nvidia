@@ -22,6 +22,7 @@ services:
               count: all
               capabilities: [ gpu ]
     environment:
+      - OLLAMA_HOST=0.0.0.0
       - OLLAMA_LLM_LIBRARY=cuda
       - OLLAMA_CUDA_VISIBLE_DEVICES=0
       - NVIDIA_VISIBLE_DEVICES=all
